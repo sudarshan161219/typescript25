@@ -1,30 +1,40 @@
-//* Protected Constructor And Child Classes
+//* Introduction to Interfaces
 
-type Holidays = {
-  date: Date;
-  reason: string;
-}[];
+interface User {
+  userName: string;
+  email: string;
+  login(): void;
+}
 
-abstract class Department {
-  protected abstract holidays: Holidays;
-  protected constructor(protected name: string) {}
+class Admin implements User {
+  constructor(
+    public userName: string,
+    public email: string,
+    public adminLevel: number
+  ) {}
 
-  public addHolidays(holidays: Holidays) {
-    if (Array.isArray(holidays)) {
-      for (const holiday of holidays) {
-        this.holidays.push(holiday);
-      }
-    }
+  login(): void {
+    console.log("Admin now logged in");
   }
 }
 
-class ItDepartment extends Department {
-  protected holidays: Holidays = [];
+class Customer implements User {
+  constructor(public userName: string, public email: string) {}
 
-  constructor(){
-  //  super()
+  login(): void {
+    console.log("Customer now logged in");
   }
 }
-class AdminDepartment extends Department {
-  protected holidays: Holidays = [];
+
+class Auth {
+  public static login(user: User) {
+    user.login();
+  }
 }
+
+const admin: Admin = new Admin("Mark", "Mark@email.com", 1);
+const customer: Customer = new Customer("John", "John@email.com");
+
+
+Auth.login(admin)
+Auth.login(customer)

@@ -1,26 +1,30 @@
 "use strict";
-//* Protected Constructor And Child Classes
-class Department {
-    constructor(name) {
-        this.name = name;
+//* Introduction to Interfaces
+class Admin {
+    constructor(userName, email, adminLevel) {
+        this.userName = userName;
+        this.email = email;
+        this.adminLevel = adminLevel;
     }
-    addHolidays(holidays) {
-        if (Array.isArray(holidays)) {
-            for (const holiday of holidays) {
-                this.holidays.push(holiday);
-            }
-        }
+    login() {
+        console.log("Admin now logged in");
     }
 }
-class ItDepartment extends Department {
-    constructor() {
-        super(...arguments);
-        this.holidays = [];
+class Customer {
+    constructor(userName, email) {
+        this.userName = userName;
+        this.email = email;
+    }
+    login() {
+        console.log("Customer now logged in");
     }
 }
-class AdminDepartment extends Department {
-    constructor() {
-        super(...arguments);
-        this.holidays = [];
+class Auth {
+    static login(user) {
+        user.login();
     }
 }
+const admin = new Admin("Mark", "Mark@email.com", 1);
+const customer = new Customer("John", "John@email.com");
+Auth.login(admin);
+Auth.login(customer);
