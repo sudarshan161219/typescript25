@@ -1,40 +1,58 @@
-//* Introduction to Interfaces
+//* Difference Between a Abstract Class and an Interface
+
+abstract class Person {
+  public abstract name: string;
+  public abstract email: string;
+  public abstract phone: number;
+
+  public greet() {
+    console.log(`Hello ${this.name}`);
+  }
+
+  public static nameClass(){
+    return "class name is Person"
+  }
+}
+
+class RegisteredPerson extends Person {
+  constructor(public name: string, public email: string, public phone: number) {
+    super();
+  }
+}
+
+const registeredPerson: RegisteredPerson = new RegisteredPerson(
+  "John",
+  "John@email.com",
+  123456789
+);
+
+console.log(registeredPerson);
+registeredPerson.greet();
+console.log(RegisteredPerson.nameClass())
 
 interface User {
-  userName: string;
+  name: string;
   email: string;
-  login(): void;
+  phone: number;
+  greeting: () => void;
 }
 
-class Admin implements User {
+class RegisteredUser implements User {
   constructor(
-    public userName: string,
+    public name: string,
     public email: string,
-    public adminLevel: number
+    public phone: number
   ) {}
 
-  login(): void {
-    console.log("Admin now logged in");
+  public greeting() {
+    console.log(`Hello ${this.name}`);
   }
+
+
 }
 
-class Customer implements User {
-  constructor(public userName: string, public email: string) {}
-
-  login(): void {
-    console.log("Customer now logged in");
-  }
-}
-
-class Auth {
-  public static login(user: User) {
-    user.login();
-  }
-}
-
-const admin: Admin = new Admin("Mark", "Mark@email.com", 1);
-const customer: Customer = new Customer("John", "John@email.com");
-
-
-Auth.login(admin)
-Auth.login(customer)
+const registeredUser: RegisteredUser = new RegisteredUser(
+  "Mark",
+  "mark@email.com",
+  123456789
+);

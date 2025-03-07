@@ -1,30 +1,33 @@
 "use strict";
-//* Introduction to Interfaces
-class Admin {
-    constructor(userName, email, adminLevel) {
-        this.userName = userName;
+//* Difference Between a Abstract Class and an Interface
+class Person {
+    greet() {
+        console.log(`Hello ${this.name}`);
+    }
+    static nameClass() {
+        return "class name is Person";
+    }
+}
+class RegisteredPerson extends Person {
+    constructor(name, email, phone) {
+        super();
+        this.name = name;
         this.email = email;
-        this.adminLevel = adminLevel;
-    }
-    login() {
-        console.log("Admin now logged in");
+        this.phone = phone;
     }
 }
-class Customer {
-    constructor(userName, email) {
-        this.userName = userName;
+const registeredPerson = new RegisteredPerson("John", "John@email.com", 123456789);
+console.log(registeredPerson);
+registeredPerson.greet();
+console.log(RegisteredPerson.nameClass());
+class RegisteredUser {
+    constructor(name, email, phone) {
+        this.name = name;
         this.email = email;
+        this.phone = phone;
     }
-    login() {
-        console.log("Customer now logged in");
-    }
-}
-class Auth {
-    static login(user) {
-        user.login();
+    greeting() {
+        console.log(`Hello ${this.name}`);
     }
 }
-const admin = new Admin("Mark", "Mark@email.com", 1);
-const customer = new Customer("John", "John@email.com");
-Auth.login(admin);
-Auth.login(customer);
+const registeredUser = new RegisteredUser("Mark", "mark@email.com", 123456789);
