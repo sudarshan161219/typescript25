@@ -1,45 +1,53 @@
 import { injectable, inject } from "inversify";
 import { UserController } from "../user/user.controller";
-import { Task } from "./tasks.schema";
 import { Request, Response } from "express";
 import { Itask, IPartialTaskWithId } from "./tasks.interface";
 import { Document } from "mongoose";
+import { TaskService } from "./tasks.service";
+import { UpdateTaskProvider } from "./providers/updateTask.provider";
+import { GetTasksProvider } from "./providers/getTasks.provider";
+import { matchedData } from "express-validator";
+import { ITaskPagintaion } from "./interfaces/taskPagination.interface";
 
 @injectable()
 export class TasksController {
-  constructor(@inject(UserController) private userController: UserController) {}
+  constructor(
+    @inject(UserController) private userController: UserController,
+    @inject(TaskService) private taskService: TaskService,
+    @inject(UpdateTaskProvider) private updateTaskProvider: UpdateTaskProvider,
+    @inject(GetTasksProvider) private getTasksProvider: GetTasksProvider
+  ) {}
 
   public async handleGetTasks(req: Request, res: Response) {
-    const tasks = await Task.find();
-    return tasks;
+    const validatedData: Partial<ITaskPagintaion> = matchedData(req);
+    try {
+      const tasks: { data: Itask[]; meta: {} } =
+        await this.getTasksProvider.findAllTask(validatedData);
+      return tasks;
+    } catch (error: any) {
+      throw new Error(error);
+    }
   }
 
   public async handlePostTasks(req: Request<{}, {}, Itask>, res: Response) {
-    const task: Document<unknown, any, Itask> = new Task(req.body);
-    await task.save();
-    return task;
+    const validatedData: Itask = matchedData(req);
+
+    try {
+      return await this.taskService.createTask(req.body);
+    } catch (error:any) {
+      throw new Error(error);
+    }
   }
 
   public async handlePatchTasks(
     req: Request<{}, {}, IPartialTaskWithId>,
     res: Response
-  ) {
-    const task = await Task.findById(req.body["_id"]);
-
-    if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+  ): Promise<Document> {
+    const validatedData: IPartialTaskWithId = matchedData(req);
+    try {
+      return await this.updateTaskProvider.updateTask(validatedData);
+    } catch (error: any) {
+      throw new Error(error);
     }
-
-    task.title = req.body.title ? req.body.title : task.title;
-    task.description = req.body.description
-      ? req.body.description
-      : task.description;
-    task.dueDate = req.body.dueDate ? req.body.dueDate : task.dueDate;
-    task.status = req.body.status ? req.body.status : task.status;
-    task.priority = req.body.priority ? req.body.priority : task.priority;
-
-    await task.save();
-
-    return task;
   }
 }
